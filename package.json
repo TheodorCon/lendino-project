@@ -1,0 +1,18 @@
+{
+  "name": "lendino-project",
+  "version": "1.0.0",
+  "description": "Interview project for Lendino - REST API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "initdb": "node db-create.js"
+  },
+  "author": "Theodor Constantin",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
+    "sqlite3": "^5.0.2"
+  }
+}
