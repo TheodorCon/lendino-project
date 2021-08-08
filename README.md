@@ -18,3 +18,31 @@ In order to start the API server, execute:
 ```shell
 npm run start
 ```
+
+For the endpoints where a payload is required, these are the required objects as a JSON body:
+
+1. `/create-project`
+
+   ```typescript
+   {
+     name: string;
+     goal: number;
+   }
+   ```
+
+1. `/account/:id/deposit`
+
+   ```typescript
+   {
+     amount: number;
+   }
+   ```
+
+1. `/project/:id/invest`
+
+   ```typescript
+   {
+     accountId: string;
+     amount: number;
+   }
+   ```
