@@ -40,8 +40,7 @@ async function getAccount(id) {
   } else throw Error('Invalid project ID');
 }
 
-async function createAccount(account) {
-  if (true) {
+async function createAccount() {
     const insertStmt = db.prepare(`INSERT INTO Account (Available, Invested) VALUES (0, 0)`);
 
     return new Promise(function (resolve) {
@@ -54,7 +53,42 @@ async function createAccount(account) {
         });
       });
     });
-  } else throw Error('Invalid `project` object');
+}
+
+async function deposit(accountId, amount) {
+    const updateStmt = db.prepare(`UPDATE Account SET Available = Available + $amount WHERE ID = $accountId`);
+    return new Promise(function (resolve) {
+      updateStmt.run({ $accountId: accountId, $amount: amount }, function (error) {
+        const selectStmt = db.prepare('SELECT * FROM Account WHERE ID = $accountId');
+        selectStmt.get({ $accountId: accountId }, (error, row) => {
+          resolve(row);
+        });
+      });
+    });
+}
+
+async function invest(accountId, projectId, amount) {
+    const updateProjectStmt = db
+      .prepare('UPDATE Project SET Funded = Funded + ? WHERE ID = ?;')
+      .bind(amount, projectId);
+    const updateAccountStmt = db
+      .prepare('UPDATE Account SET Available = Available - ?, Invested = Invested + ? WHERE ID = ?;')
+      .bind(amount, amount, accountId);
+
+    return new Promise(function (resolve) {
+      db.serialize(function () {
+        db.exec('BEGIN');
+        updateProjectStmt.run();
+        updateAccountStmt.run();
+        db.exec('COMMIT');
+
+        const selectStmt = db.prepare('SELECT * FROM Project WHERE ID = $projectId');
+
+        selectStmt.get({ $projectId: projectId }, (error, row) => {
+          resolve(row);
+        });
+      });
+    });
 }
 
 module.exports = {
@@ -62,4 +96,6 @@ module.exports = {
   createProject,
   getAccount,
   createAccount,
+  invest,
+  deposit,
 };
