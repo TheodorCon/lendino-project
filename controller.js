@@ -31,7 +31,13 @@ const ENDPOINTS = [
         } else {
           response.sendStatus(404);
         }
-      } catch (error) {}
+      } catch (error) {
+        response.status(500);
+        response.json({
+          message: 'An error occured',
+          details: error,
+        });
+      }
     },
   },
   {
@@ -61,7 +67,13 @@ const ENDPOINTS = [
         } else {
           response.sendStatus(404);
         }
-      } catch (error) {}
+      } catch (error) {
+        response.status(500);
+        response.json({
+          message: 'An error occured',
+          details: error,
+        });
+      }
     },
   },
   {
@@ -80,7 +92,13 @@ const ENDPOINTS = [
         } else {
           response.sendStatus(404);
         }
-      } catch (error) {}
+      } catch (error) {
+        response.status(500);
+        response.json({
+          message: 'An error occured',
+          details: error,
+        });
+      }
     },
   },
   {
@@ -97,8 +115,13 @@ const ENDPOINTS = [
 
         if (project && account) {
           if (account.Available < amount) {
-            response.status(406);
+            response.status(500);
             response.json({ error: 'Not enough available funds for this action' });
+            return;
+          }
+          if (project.Funded + amount > project.Goal) {
+            response.status(500);
+            response.json({ error: 'Cannot invest that high of an amount' });
             return;
           }
 
@@ -109,7 +132,13 @@ const ENDPOINTS = [
         } else {
           response.sendStatus(404);
         }
-      } catch (error) {}
+      } catch (error) {
+        response.status(500);
+        response.json({
+          message: 'An error occured',
+          details: error,
+        });
+      }
     },
   },
 ];
